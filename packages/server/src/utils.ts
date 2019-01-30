@@ -8,7 +8,7 @@ export interface ServerResponseRequest {
 
 export interface Context extends ServerResponseRequest {
   prisma: Prisma;
-  url: string;
+  url?: string;
 }
 
 export type Resolver = (

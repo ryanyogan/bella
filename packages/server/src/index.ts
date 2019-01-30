@@ -4,11 +4,10 @@ import { createServer } from "./createServer";
 import { prisma } from "./generated/prisma-client";
 import { Request } from "express";
 
-interface MyRequest extends Request {
+export interface MyRequest extends Request {
   userId?: string;
   user?: object;
 }
-
 const server = createServer();
 
 server.express.use(cookieParser());

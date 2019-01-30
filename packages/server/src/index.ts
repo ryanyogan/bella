@@ -1,38 +1,46 @@
-import { GraphQLServer } from 'graphql-yoga'
-import { prisma } from './generated/prisma-client'
-import { Context } from './utils'
+import * as jwt from "jsonwebtoken";
+import * as cookieParser from "cookie-parser";
+import { createServer } from "./createServer";
+import { prisma } from "./generated/prisma-client";
+import { Request } from "express";
 
-const resolvers = {
-  Query: {
-    feed(parent, args, context: Context) {
-      return context.prisma.posts({ where: { published: true } })
-    },
-    drafts(parent, args, context: Context) {
-      return context.prisma.posts({ where: { published: false } })
-    },
-    post(parent, { id }, context: Context) {
-      return context.prisma.post({ id })
-    },
-  },
-  Mutation: {
-    createDraft(parent, { title, content }, context: Context) {
-      return context.prisma.createPost({ title, content })
-    },
-    deletePost(parent, { id }, context: Context) {
-      return context.prisma.deletePost({ id })
-    },
-    publish(parent, { id }, context: Context) {
-      return context.prisma.updatePost({
-        where: { id },
-        data: { published: true },
-      })
-    },
-  },
+interface MyRequest extends Request {
+  userId?: string;
+  user?: object;
 }
 
-const server = new GraphQLServer({
-  typeDefs: './src/schema.graphql',
-  resolvers,
-  context: { prisma },
-})
-server.start(() => console.log('Server is running on http://localhost:4000'))
+const server = createServer();
+
+server.express.use(cookieParser());
+
+server.express.use(
+  (req: MyRequest, _, next): void => {
+    const { token } = req.cookies;
+    if (token) {
+      const { userId }: any = jwt.verify(token, process.env.APP_SECRET as any);
+      req.userId = userId;
+    }
+
+    next();
+  }
+);
+
+server.express.use(async (req: MyRequest, _, next) => {
+  if (!req.userId) return next();
+
+  const user = await prisma.user({ id: req.userId });
+  req.user = user;
+  next();
+});
+
+server.start(
+  {
+    cors: {
+      credentials: true,
+      origin: process.env.FRONTEND_URL as any
+    }
+  },
+  info => {
+    console.log(`Server is now running at http://localhost:${info.port}`);
+  }
+);

@@ -1,18 +1,46 @@
+scalar DateTime
+
+type Error {
+  path: String!
+  message: String!
+}
+
+enum Sex {
+  MALE
+  FEMALE
+}
+
+type User {
+  id: ID!
+  email: String!
+  dogs: [Dog]!
+}
+
+type Dog {
+  name: String!
+  breed: String!
+  sex: Sex!
+  dateOfBirth: DateTime!
+  owner: User!
+}
+
+input AuthInput {
+  email: String!
+  password: String!
+}
+
+type AuthResponse {
+  user: User
+  errors: [Error!]
+}
+
 type Query {
-  feed: [Post!]!
-  drafts: [Post!]!
-  post(id: ID!): Post
+  me: User
+  dogs: [Dog!]
 }
 
 type Mutation {
-  createDraft(title: String!, content: String): Post
-  deletePost(id: ID!): Post
-  publish(id: ID!): Post
-}
-
-type Post {
-  id: ID!
-  published: Boolean!
-  title: String!
-  content: String!
+  register(input: AuthInput): AuthResponse!
+  login(input: AuthInput): AuthResponse!
+  logout: Boolean!
 }

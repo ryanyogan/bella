@@ -1,6 +1,20 @@
-type Post {
+type User {
   id: ID! @unique
-  published: Boolean! @default(value: "false")
-  title: String!
-  content: String!
+  email: String! @unique
+  password: String!
+  dogs: [Dog]!
+}
+
+type Dog {
+  id: ID! @unique
+  name: String!
+  breed: String!
+  sex: Sex!
+  dateOfBirth: DateTime!
+  owner: User!
+}
+
+enum Sex {
+  Male
+  Female
 }

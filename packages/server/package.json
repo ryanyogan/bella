@@ -1,5 +1,7 @@
 {
-  "name": "server",
+  "name": "@bella/server",
+  "private": true,
+  "version": "0.0.1",
   "scripts": {
     "dev": "NODE_ENV=deveopment nodemon --exec ts-node src/index.ts",
     "start:prisma": "docker-compose up -d",

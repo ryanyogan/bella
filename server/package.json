@@ -1,0 +1,15 @@
+{
+  "name": "server",
+  "scripts": {
+    "start": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "graphql-yoga": "1.17.1",
+    "prisma-client-lib": "1.25.4"
+  },
+  "devDependencies": {
+    "prisma": "1.25.4",
+    "ts-node": "7.0.1",
+    "typescript": "3.2.2"
+  }
+}

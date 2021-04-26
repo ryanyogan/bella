@@ -9,7 +9,7 @@
     ]
   },
   "devDependencies": {
-    "lerna": "^3.10.7"
+    "lerna": "3.10.7"
   },
   "scripts": {
     "build:server": "lerna run build --scope={@bella/server}"
